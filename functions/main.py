@@ -60,6 +60,20 @@ def query_player(req: https_fn.Request) -> https_fn.Response:
     else:
         return https_fn.Response('Player not found', status=404)
 
+def process_video():
+
+
+@https_fn.on_request()
+def get_processed_video(req: https_fn.Request) -> https_fn.Response:
+    # 如果bucket中有视频文件，返回视频文件的URL，否则处理视频并存入bucket并返回URL
+    from firebase_admin import storage
+    playId = req.args.get('playId')
+    bucket = storage.bucket('gs://mlb-project-2.firebasestorage.app')
+    blob = bucket.blob(f'videos/{playId}.mp4')
+    if blob.exists():
+        return https_fn.Response(blob.public_url)
+    else:
+
 @https_fn.on_request()
 def store_hr(req: https_fn.Request) -> https_fn.Response:
     from firebase_admin import storage
